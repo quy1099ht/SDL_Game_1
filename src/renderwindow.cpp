@@ -48,8 +48,8 @@ void RenderWindow::render(Entity& p_entity){
 	SDL_Rect destination;
 	destination.x = p_entity.getX();
 	destination.y = p_entity.getY();
-	destination.w = p_entity.getCurFrame().w;
-	destination.h = p_entity.getCurFrame().h;
+	destination.w = p_entity.getCurFrame().w * 4;
+	destination.h = p_entity.getCurFrame().h * 4;
 	SDL_RenderCopy(renderer,p_entity.getTex(),&src,&destination);
 }
 
