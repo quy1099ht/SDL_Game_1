@@ -13,9 +13,13 @@ public:
  	};
 	SDL_Texture * getTex();
 	SDL_Rect getCurFrame();
+	void setFallingState(bool state);
 	void setPosition(float x, float y);
+	void setSize(int width , int height);
+	void Falling(float speed);
 private:
 	Vector2f position;
 	SDL_Rect currentFrame;
 	SDL_Texture * currentTexture;
+	bool isFalling;
 };
