@@ -16,7 +16,7 @@ RenderWindow::RenderWindow(const char* p_title,int p_w,int p_h)
 	}
 
 	//SDL_CreateRenderer(<window (from SDL_CreateWindow)>, -1 <I forgot what it is>, <for handling graphic card>)
-	renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED );
 }
 
 void RenderWindow::cleanUp(){
@@ -46,13 +46,21 @@ void RenderWindow::render(Entity& p_entity){
 	src.h = p_entity.getCurFrame().h;
 
 	SDL_Rect destination;
-	destination.x = p_entity.getX();
-	destination.y = p_entity.getY();
-	destination.w = p_entity.getCurFrame().w * 4;
-	destination.h = p_entity.getCurFrame().h * 4;
+	destination.x = p_entity.getPosition().x;
+	destination.y = p_entity.getPosition().y;
+	destination.w = p_entity.getCurFrame().w;
+	destination.h = p_entity.getCurFrame().h;
 	SDL_RenderCopy(renderer,p_entity.getTex(),&src,&destination);
 }
 
 void RenderWindow::display(){
 	SDL_RenderPresent(renderer);
+}
+
+int RenderWindow::getRefreshRate(){
+	int displayIndex = SDL_GetWindowDisplayIndex(window);
+	SDL_DisplayMode mode;
+
+	SDL_GetDisplayMode(displayIndex,0,&mode);
+	return mode.refresh_rate;
 }
