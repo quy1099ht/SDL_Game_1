@@ -4,7 +4,7 @@ Simple block jumping.
 
 ## Description
 
-This is a C++ SDL2 platformer game project
+This is a C++ SDL2 platformer game project. I know the code is ass. Feel free to raise any issue.
 
 ## Getting Started
 
@@ -29,7 +29,7 @@ Step 2 : Press F7 to run
 code blocks for commands
 ```
 ## How to open the build
-* Go to bin/release and open .exe file. 
+* Go to bin/debug and open .exe file. 
 
 ## Help
 

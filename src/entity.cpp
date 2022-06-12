@@ -6,7 +6,9 @@ Entity::Entity(Vector2f pos, SDL_Texture *p_t)
 	: position(pos), currentTexture(p_t)
 {
 	isFalling = true;
+	isDead = false;
 	isUp = false;
+	isStanding = false;
 	currentFrame.x = 0;
 	currentFrame.y = 0;
 	currentFrame.w = 32;
@@ -72,8 +74,15 @@ Vector2f Entity::getTempPlatform()
 };
 void Entity::jumpUp()
 {
-	isUp = true;
-	position.y -= 2.0f;
+	if (isStanding && !isUp)
+	{
+		isUp = true;
+		position.y -= 2.0f;
+	}
+	else if (!isStanding && isUp)
+	{
+		position.y -= 2.0f;
+	}
 }
 
 void Entity::setIsUp(bool state)
@@ -81,10 +90,26 @@ void Entity::setIsUp(bool state)
 	isUp = state;
 }
 
-bool Entity::getIsUp(){
+bool Entity::getIsUp()
+{
 	return isUp;
 }
 
-bool Entity::getIsStanding(){
+bool Entity::getIsStanding()
+{
 	return isStanding;
+}
+
+void Entity::setIsStanding(bool state)
+{
+	isStanding = state;
+}
+
+bool Entity::getIsDead()
+{
+	return isDead;
+}
+
+void Entity::setDead(){
+	isDead = true;
 }

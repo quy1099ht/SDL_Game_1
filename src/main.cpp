@@ -6,9 +6,16 @@
 #include <stdlib.h>
 #include <sstream>
 
+
 #include <RenderWindow.hpp>
 #include <Entity.hpp>
 #include <Utils.hpp>
+
+void consoleLog()
+{
+	utils::logTexts("Wellcome to game", "Box Jumping");
+	utils::logTime();
+};
 
 int main(int argc, char *args[])
 {
@@ -59,11 +66,6 @@ int main(int argc, char *args[])
 		spikes.push_back(spike);
 	}
 
-	utils::logNumber("Player x pos", player.getPosition().x);
-	utils::logNumber("Player y pos", player.getPosition().y);
-	utils::logNumber("First platform pos x", platforms[0].getPosition().x);
-	utils::logNumber("First platform pos y", platforms[0].getPosition().y);
-
 	bool gameRunning = true;
 
 	SDL_Event event;
@@ -96,7 +98,11 @@ int main(int argc, char *args[])
 					switch (event.key.keysym.sym)
 					{
 					case SDLK_UP:
-						player.setIsUp(true);
+						if (player.getIsStanding())
+						{
+							player.setIsUp(true);
+							player.setIsStanding(false);
+						}
 						break;
 					case SDLK_LEFT:
 						player.moveVertical(-1, 2);
@@ -125,20 +131,37 @@ int main(int argc, char *args[])
 		}
 
 		window.clear();
+		consoleLog();
 		// Game rendering loop
 
 		// Gravivty Speed
 		player.Falling(gravity);
 
-		// Render entities
+		if (!player.getIsDead())
+		{
+			system("CLS");
+		}
+
+		for (Entity &spike : spikes)
+		{
+			if (utils::distanceFrom2Object(player.getPosition(), spike.getPosition()) < 32)
+			{
+				window.cleanUp();
+				player.setDead();
+				gameRunning = false;
+				utils::logTexts("Game status", "You die!");
+			}
+		}
 
 		for (Entity &platform : platforms)
 		{
+			// Handle collider
 			if (utils::distanceFrom2Object(player.getPosition(), platform.getPosition()) < 34)
 			{
 				if (player.getTempPlatform().x != platform.getPosition().x && player.getTempPlatform().y != platform.getPosition().y)
 				{
 					player.setFallingState(false);
+					player.setIsStanding(true);
 					player.setTempPlatform(platform.getPosition());
 					utils::logNumber("x", player.getPosition().x);
 					utils::logNumber("y", player.getPosition().y);
@@ -153,13 +176,13 @@ int main(int argc, char *args[])
 			}
 		}
 
-		//Render everything
+		// Render everything
 		window.render(player);
 		for (Entity &platform : platforms)
 		{
 			window.render(platform);
 		}
-		
+
 		for (Entity &spike : spikes)
 		{
 			window.render(spike);
@@ -176,5 +199,6 @@ int main(int argc, char *args[])
 
 	window.cleanUp();
 	SDL_Quit();
+	system("pause");
 	return 0;
 };
