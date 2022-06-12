@@ -1,31 +1,35 @@
 # Project Title
 
-Simple overview of use/purpose.
+Simple block jumping.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+This is a C++ SDL2 platformer game project
 
 ## Getting Started
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* SDL2
+* g++
+* SDL2/image
 
 ### Installing
 
 * You need to download mingw, SDL2.0, SDL_Image
 * Follow the guide from [codergopher](https://www.youtube.com/channel/UCfiC4q3AahU4Io-s83-CIbQ)
+* Just follow the first video to install on Window or second one for Linux
 ### Executing program
 
 * How to run the program
 * Step-by-step bullets
 ```
 Step 1 : Open Project with Sublime Text
-Step 2 : Press F7
+Step 2 : Press F7 to run
 code blocks for commands
 ```
+## How to open the build
+* Go to bin/release and open .exe file. 
 
 ## Help
 

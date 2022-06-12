@@ -84,3 +84,7 @@ void Entity::setIsUp(bool state)
 bool Entity::getIsUp(){
 	return isUp;
 }
+
+bool Entity::getIsStanding(){
+	return isStanding;
+}
