@@ -1,8 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <sstream>
 
 #include <RenderWindow.hpp>
 #include <Entity.hpp>
@@ -28,8 +30,7 @@ int main(int argc, char *args[])
 	SDL_Texture *grassTexture = window.loadTexture("res/gfx/ground_grass_1.png");
 	SDL_Texture *platformTexture = window.loadTexture("res/gfx/platform.png");
 	SDL_Texture *playerTexture = window.loadTexture("res/gfx/player.png");
-	// Entity platform0(150,140,grassTexture);
-	
+
 	std::vector<Entity> entities;
 	std::vector<Entity> platforms;
 
@@ -38,26 +39,19 @@ int main(int argc, char *args[])
 	float currentTime = utils::hireTimeInSeconds();
 
 	int range = 300 - 100 + 1;
-	Entity player(Vector2f((rand() % range + 100), 100 ), playerTexture);
+	Entity player(Vector2f(0, 100), playerTexture);
 	for (int i = 0; i < 20; i++)
 	{
 		int num = rand() % range + 100;
-		Entity platform(Vector2f(i * 64, 600 - num), platformTexture);
+		Entity platform(Vector2f(i * 64, 600), platformTexture);
 		platform.setSize(64, 32);
 		platforms.push_back(platform);
 	}
 
-	// for (int i = 0; i < 2; ++i)
-	// {
-	// 	Entity platform(Vector2f((250 + 1) * i ,605), grassTexture);
-	// 	entities.push_back(platform);
-	// }
-
-	Entity platform1(Vector2f(250, 0), grassTexture);
-	// Entity platform2(Vector2f(250 + 32 * 4,605), grassTexture);
-
-	entities.push_back(platform1);
-	// entities.push_back(platform2);
+	utils::logNumber("Player x pos", player.getPosition().x);
+	utils::logNumber("Player y pos", player.getPosition().y);
+	utils::logNumber("First platform pos x", platforms[0].getPosition().x);
+	utils::logNumber("First platform pos y", platforms[0].getPosition().y);
 
 	bool gameRunning = true;
 
@@ -92,8 +86,7 @@ int main(int argc, char *args[])
 		// const float alpha = accumulator / timeStep;
 
 		window.clear();
-		// window.render(platform0);
-		// entities[0].setPosition(entities[0].getPosition().x,entities[0].getPosition().y + 0.5f);
+		// Game rendering loop
 		player.Falling(0.005f);
 
 		// Render entities
@@ -104,7 +97,15 @@ int main(int argc, char *args[])
 			window.render(platform);
 		}
 
+		utils::logNumber("Player to first platform", utils::distanceFrom2Object(player.getPosition(), platforms[0].getPosition()));
+
+		if (utils::distanceFrom2Object(player.getPosition(), platforms[0].getPosition()) < 34)
+		{
+			player.setFallingState(false);
+		}
 		// std::cout << utils::hireTimeInSeconds() << std::endl;
+
+		// utils::logTime();
 
 		window.display();
 
@@ -119,4 +120,4 @@ int main(int argc, char *args[])
 	SDL_Quit();
 
 	return 0;
-}
+};

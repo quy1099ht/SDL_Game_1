@@ -17,9 +17,13 @@ public:
 	void setPosition(float x, float y);
 	void setSize(int width , int height);
 	void Falling(float speed);
+	void moveVertical(char* direction);
+	void moveHorizontal();
 private:
 	Vector2f position;
 	SDL_Rect currentFrame;
 	SDL_Texture * currentTexture;
 	bool isFalling;
+	bool isUp;
+	char* tag;
 };

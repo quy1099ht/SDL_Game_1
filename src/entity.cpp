@@ -35,5 +35,8 @@ void Entity::Falling(float speed){
 	if(isFalling){
 		position.y += position.y * speed;
 	}
-	
+}
+
+void Entity::setFallingState(bool state){
+	isFalling = state;
 }
