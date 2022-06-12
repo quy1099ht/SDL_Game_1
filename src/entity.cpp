@@ -25,18 +25,29 @@ void Entity::setSize(int width,int height)
 {
 	currentFrame.w = width;
 	currentFrame.h = height;
-}
+};
 
 void Entity::setPosition(float x,float y){
 	position = Vector2f(x,y);
-}
+};
 
 void Entity::Falling(float speed){
 	if(isFalling){
 		position.y += position.y * speed;
 	}
-}
+};
 
 void Entity::setFallingState(bool state){
 	isFalling = state;
-}
+};
+
+void Entity::moveVertical(int direction){
+	if(direction == 1){
+		//move right
+		position.x += 1;
+	}
+	else if(direction == -1){
+		//move left
+		position.x -= 1;
+	}
+};

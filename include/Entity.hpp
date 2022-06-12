@@ -17,7 +17,7 @@ public:
 	void setPosition(float x, float y);
 	void setSize(int width , int height);
 	void Falling(float speed);
-	void moveVertical(char* direction);
+	void moveVertical(int direction);
 	void moveHorizontal();
 private:
 	Vector2f position;

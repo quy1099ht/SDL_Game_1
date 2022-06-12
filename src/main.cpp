@@ -78,6 +78,25 @@ int main(int argc, char *args[])
 				{
 					gameRunning = false;
 				}
+				else if (event.type == SDL_KEYDOWN)
+				{
+					switch (event.key.keysym.sym)
+					{
+					case SDLK_w:
+						utils::logTexts("Press btn", "w");
+						break;
+					case SDLK_LEFT:
+						utils::logTexts("Press btn", "left arrow");
+						player.moveVertical(-1);
+						break;
+					case SDLK_RIGHT :
+						utils::logTexts("Press btn", "right arrow");
+						player.moveVertical(1);
+						break;
+					default:
+						break;
+					}
+				}
 			}
 			accumulator -= timeStep;
 		}
@@ -97,13 +116,10 @@ int main(int argc, char *args[])
 			window.render(platform);
 		}
 
-		utils::logNumber("Player to first platform", utils::distanceFrom2Object(player.getPosition(), platforms[0].getPosition()));
-
 		if (utils::distanceFrom2Object(player.getPosition(), platforms[0].getPosition()) < 34)
 		{
 			player.setFallingState(false);
 		}
-		// std::cout << utils::hireTimeInSeconds() << std::endl;
 
 		// utils::logTime();
 
