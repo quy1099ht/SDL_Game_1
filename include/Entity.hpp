@@ -17,13 +17,17 @@ public:
 	void setPosition(float x, float y);
 	void setSize(int width , int height);
 	void Falling(float speed);
-	void moveVertical(int direction);
+	void moveVertical(int direction, float speed);
 	void moveHorizontal();
+	void setTempPlatform(Vector2f tmpPlatform);
+	Vector2f getTempPlatform();
+	void jumpUp();
 private:
 	Vector2f position;
 	SDL_Rect currentFrame;
 	SDL_Texture * currentTexture;
-	bool isFalling;
+	Vector2f tempPlatform;
+	bool isFalling; 
 	bool isUp;
 	char* tag;
 };

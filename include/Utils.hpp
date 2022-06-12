@@ -29,7 +29,7 @@ namespace utils
         std::string s(ss.str());
         utils::logTexts(firstChar, s);
     };
-    inline float distanceFrom2Object(Vector2f& first,Vector2f& second){
+    inline float distanceFrom2Object(Vector2f first,Vector2f second){
         return sqrt(pow(second.x - first.x, 2) + pow(second.y - first.y, 2) * 1.0);
     };
 }

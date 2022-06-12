@@ -40,11 +40,12 @@ int main(int argc, char *args[])
 
 	int range = 300 - 100 + 1;
 	Entity player(Vector2f(0, 100), playerTexture);
-	for (int i = 0; i < 20; i++)
+	player.setTempPlatform(Vector2f(-1, -1));
+	for (int i = 0; i < 40; i++)
 	{
 		int num = rand() % range + 100;
-		Entity platform(Vector2f(i * 64, 600), platformTexture);
-		platform.setSize(64, 32);
+		Entity platform(Vector2f(i * 32, 600 - num), platformTexture);
+		platform.setSize(32, 32);
 		platforms.push_back(platform);
 	}
 
@@ -72,6 +73,7 @@ int main(int argc, char *args[])
 
 		while (accumulator >= timeStep)
 		{
+			// Handle input
 			while (SDL_PollEvent(&event))
 			{
 				if (event.type == SDL_QUIT)
@@ -83,15 +85,12 @@ int main(int argc, char *args[])
 					switch (event.key.keysym.sym)
 					{
 					case SDLK_w:
-						utils::logTexts("Press btn", "w");
 						break;
 					case SDLK_LEFT:
-						utils::logTexts("Press btn", "left arrow");
-						player.moveVertical(-1);
+						player.moveVertical(-1, 2);
 						break;
-					case SDLK_RIGHT :
-						utils::logTexts("Press btn", "right arrow");
-						player.moveVertical(1);
+					case SDLK_RIGHT:
+						player.moveVertical(1, 2);
 						break;
 					default:
 						break;
@@ -106,7 +105,7 @@ int main(int argc, char *args[])
 
 		window.clear();
 		// Game rendering loop
-		player.Falling(0.005f);
+		player.Falling(0.009f);
 
 		// Render entities
 		window.render(player);
@@ -116,9 +115,25 @@ int main(int argc, char *args[])
 			window.render(platform);
 		}
 
-		if (utils::distanceFrom2Object(player.getPosition(), platforms[0].getPosition()) < 34)
+		for (Entity &platform : platforms)
 		{
-			player.setFallingState(false);
+			if (utils::distanceFrom2Object(player.getPosition(), platform.getPosition()) < 34)
+			{
+				if (player.getTempPlatform().x != platform.getPosition().x && player.getTempPlatform().y != platform.getPosition().y)
+				{
+					player.setFallingState(false);
+					player.setTempPlatform(platform.getPosition());
+					utils::logNumber("x", player.getPosition().x);
+					utils::logNumber("y", player.getPosition().y);
+				}
+			}
+			else if (utils::distanceFrom2Object(player.getPosition(), platform.getPosition()) > 34)
+			{
+				if (utils::distanceFrom2Object(player.getPosition(), player.getTempPlatform()) > 34)
+				{
+					player.setFallingState(true);
+				}
+			}
 		}
 
 		// utils::logTime();
