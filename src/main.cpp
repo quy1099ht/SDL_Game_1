@@ -29,15 +29,17 @@ int main(int argc, char *args[])
 
 	SDL_Texture *platformTexture = window.loadTexture("res/gfx/platform.png");
 	SDL_Texture *playerTexture = window.loadTexture("res/gfx/player.png");
-	
-	
 
-	std::vector<Entity> entities;
+	SDL_Texture *spikeTexture = window.loadTexture("res/gfx/spike.png");
+
 	std::vector<Entity> platforms;
+	std::vector<Entity> spikes;
 
 	const float timeStep = 0.01f;
 	float accumulator = 0.0f;
 	float currentTime = utils::hireTimeInSeconds();
+
+	const float gravity = 0.009f;
 
 	int range = 300 - 100 + 1;
 	Entity player(Vector2f(0, 100), playerTexture);
@@ -48,6 +50,13 @@ int main(int argc, char *args[])
 		Entity platform(Vector2f(i * 32, 600 - num), platformTexture);
 		platform.setSize(32, 32);
 		platforms.push_back(platform);
+	}
+
+	for (int i = 0; i < 40; i++)
+	{
+		Entity spike(Vector2f(i * 32, 610), spikeTexture);
+		spike.setSize(32, 32);
+		spikes.push_back(spike);
 	}
 
 	utils::logNumber("Player x pos", player.getPosition().x);
@@ -86,8 +95,6 @@ int main(int argc, char *args[])
 				{
 					switch (event.key.keysym.sym)
 					{
-					case SDLK_w:
-						break;
 					case SDLK_UP:
 						player.setIsUp(true);
 						break;
@@ -96,24 +103,6 @@ int main(int argc, char *args[])
 						break;
 					case SDLK_RIGHT:
 						player.moveVertical(1, 2);
-						break;
-					default:
-						break;
-					}
-				}
-				else if (event.type == SDL_KEYUP)
-				{
-					switch (event.key.keysym.sym)
-					{
-					case SDLK_w:
-						break;
-					case SDLK_UP:
-						break;
-					case SDLK_LEFT:
-
-						break;
-					case SDLK_RIGHT:
-
 						break;
 					default:
 						break;
@@ -137,15 +126,11 @@ int main(int argc, char *args[])
 
 		window.clear();
 		// Game rendering loop
-		player.Falling(0.009f);
+
+		// Gravivty Speed
+		player.Falling(gravity);
 
 		// Render entities
-		window.render(player);
-
-		for (Entity &platform : platforms)
-		{
-			window.render(platform);
-		}
 
 		for (Entity &platform : platforms)
 		{
@@ -168,7 +153,17 @@ int main(int argc, char *args[])
 			}
 		}
 
-		// utils::logTime();
+		//Render everything
+		window.render(player);
+		for (Entity &platform : platforms)
+		{
+			window.render(platform);
+		}
+		
+		for (Entity &spike : spikes)
+		{
+			window.render(spike);
+		}
 
 		window.display();
 
@@ -181,6 +176,5 @@ int main(int argc, char *args[])
 
 	window.cleanUp();
 	SDL_Quit();
-
 	return 0;
 };

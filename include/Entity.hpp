@@ -24,6 +24,8 @@ public:
 	void jumpUp();
 	void setIsUp(bool state);
 	bool getIsUp();
+	void setIsStanding();
+	bool getIsStanding();
 private:
 	Vector2f position;
 	SDL_Rect currentFrame;
@@ -31,5 +33,6 @@ private:
 	Vector2f tempPlatform;
 	bool isFalling; 
 	bool isUp;
+	bool isStanding;
 	char* tag;
 };
