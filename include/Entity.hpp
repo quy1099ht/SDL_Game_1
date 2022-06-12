@@ -22,6 +22,8 @@ public:
 	void setTempPlatform(Vector2f tmpPlatform);
 	Vector2f getTempPlatform();
 	void jumpUp();
+	void setIsUp(bool state);
+	bool getIsUp();
 private:
 	Vector2f position;
 	SDL_Rect currentFrame;

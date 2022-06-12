@@ -27,9 +27,10 @@ int main(int argc, char *args[])
 
 	std::cout << "Frame rate = " << window.getRefreshRate() << std::endl;
 
-	SDL_Texture *grassTexture = window.loadTexture("res/gfx/ground_grass_1.png");
 	SDL_Texture *platformTexture = window.loadTexture("res/gfx/platform.png");
 	SDL_Texture *playerTexture = window.loadTexture("res/gfx/player.png");
+	
+	
 
 	std::vector<Entity> entities;
 	std::vector<Entity> platforms;
@@ -57,7 +58,7 @@ int main(int argc, char *args[])
 	bool gameRunning = true;
 
 	SDL_Event event;
-
+	int jumpFrame = 0;
 	while (gameRunning)
 	{
 		// Opimize CPU running
@@ -69,6 +70,7 @@ int main(int argc, char *args[])
 		currentTime = newTime;
 
 		accumulator += frameTime;
+
 		// All these above is for not overloading CPU
 
 		while (accumulator >= timeStep)
@@ -86,6 +88,9 @@ int main(int argc, char *args[])
 					{
 					case SDLK_w:
 						break;
+					case SDLK_UP:
+						player.setIsUp(true);
+						break;
 					case SDLK_LEFT:
 						player.moveVertical(-1, 2);
 						break;
@@ -96,12 +101,39 @@ int main(int argc, char *args[])
 						break;
 					}
 				}
+				else if (event.type == SDL_KEYUP)
+				{
+					switch (event.key.keysym.sym)
+					{
+					case SDLK_w:
+						break;
+					case SDLK_UP:
+						break;
+					case SDLK_LEFT:
+
+						break;
+					case SDLK_RIGHT:
+
+						break;
+					default:
+						break;
+					}
+				}
 			}
 			accumulator -= timeStep;
 		}
 
-		/* code */
-		// const float alpha = accumulator / timeStep;
+		if (jumpFrame > 100)
+		{
+			player.setIsUp(false);
+			jumpFrame = 0;
+		}
+
+		if (player.getIsUp())
+		{
+			jumpFrame++;
+			player.jumpUp();
+		}
 
 		window.clear();
 		// Game rendering loop
