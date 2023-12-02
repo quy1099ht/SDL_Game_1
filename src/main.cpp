@@ -42,6 +42,7 @@ int main(int argc, char *args[])
 	std::vector<Entity> platforms;
 	std::vector<Entity> spikes;
 
+	//100 times per sec
 	const float timeStep = 0.01f;
 	float accumulator = 0.0f;
 	float currentTime = utils::hireTimeInSeconds();
@@ -49,8 +50,10 @@ int main(int argc, char *args[])
 	const float gravity = 0.009f;
 
 	int range = 300 - 100 + 1;
+	
 	Entity player(Vector2f(0, 100), playerTexture);
 	player.setTempPlatform(Vector2f(-1, -1));
+	
 	for (int i = 0; i < 40; i++)
 	{
 		int num = rand() % range + 100;

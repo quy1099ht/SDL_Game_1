@@ -19,6 +19,15 @@ This is a C++ SDL2 platformer game project. I know the code is ass. Feel free to
 * You need to download mingw, SDL2.0, SDL_Image
 * Follow the guide from [codergopher](https://www.youtube.com/channel/UCfiC4q3AahU4Io-s83-CIbQ)
 * Just follow the first video to install on Window or second one for Linux
+
+### Step by Step Installing libraries
+
+* Download [g++ library](https://sourceforge.net/projects/mingw-w64/)
+* Download [SDL2 library](https://drive.google.com/drive/folders/1Y6eDY8mkzXZMScY476sLLFnKBFUZQ7-8?usp=drive_link) 
+* Copy folder `x86_64-w64-mingw32` in `SDL2-2.0.22` to C:/ and change name to `SDL2-w64`
+* Copy contents from `SDL2_image-2.0.5` to `SDL2-w64`
+* Add path from `mingw-w64/bin` to Path in eviroments
+
 ### Executing program
 
 * How to run the program
