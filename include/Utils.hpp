@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <sstream>
 #include <cmath>
+#include "Math.hpp"
 
 namespace utils
 {
@@ -30,6 +31,13 @@ namespace utils
         utils::logTexts(firstChar, s);
     };
     inline float distanceFrom2Object(Vector2f first,Vector2f second){
-        return sqrt(pow(second.x - first.x, 2) + pow(second.y - first.y, 2) * 1.0);
+        float dx = second.x - first.x;
+        float dy = second.y - first.y;
+        return std::sqrt(dx * dx + dy * dy);
+    };
+
+    inline bool AABBIntersect(const Vector2f& aPos, int aW, int aH, const Vector2f& bPos, int bW, int bH){
+        return !(aPos.x + aW <= bPos.x || aPos.x >= bPos.x + bW ||
+                 aPos.y + aH <= bPos.y || aPos.y >= bPos.y + bH);
     };
 }

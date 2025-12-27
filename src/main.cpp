@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <stdlib.h>
 #include <sstream>
@@ -138,6 +139,8 @@ int main(int argc, char *args[])
 		// Game rendering loop
 
 		// Gravivty Speed
+		// capture previous position to perform a simple swept vertical check
+		Vector2f prevPos = player.getPosition();
 		player.Falling(gravity);
 
 		if (!player.getIsDead())
@@ -147,7 +150,8 @@ int main(int argc, char *args[])
 
 		for (Entity &spike : spikes)
 		{
-			if (utils::distanceFrom2Object(player.getPosition(), spike.getPosition()) < 32)
+			if (utils::AABBIntersect(player.getPosition(), player.getCurFrame().w, player.getCurFrame().h,
+									 spike.getPosition(), spike.getCurFrame().w, spike.getCurFrame().h))
 			{
 				window.cleanUp();
 				player.setDead();
@@ -156,27 +160,104 @@ int main(int argc, char *args[])
 			}
 		}
 
+		bool onAnyPlatform = false;
 		for (Entity &platform : platforms)
 		{
-			// Handle collider
-			if (utils::distanceFrom2Object(player.getPosition(), platform.getPosition()) < 34)
+			// positions and bounds
+			float prevLeft = prevPos.x;
+			float prevRight = prevPos.x + player.getCurFrame().w;
+			float prevTop = prevPos.y;
+			float prevBottom = prevPos.y + player.getCurFrame().h;
+
+			float currLeft = player.getPosition().x;
+			float currRight = player.getPosition().x + player.getCurFrame().w;
+			float currTop = player.getPosition().y;
+			float currBottom = player.getPosition().y + player.getCurFrame().h;
+
+			float platLeft = platform.getPosition().x;
+			float platRight = platform.getPosition().x + platform.getCurFrame().w;
+			float platTop = platform.getPosition().y;
+			float platBottom = platform.getPosition().y + platform.getCurFrame().h;
+
+			bool xOverlapPrev = !(prevRight <= platLeft || prevLeft >= platRight);
+			bool xOverlapCurr = !(currRight <= platLeft || currLeft >= platRight);
+
+			bool landedFromAbove = xOverlapCurr && prevBottom <= platTop && currBottom >= platTop;
+			bool hitHeadFromBelow = xOverlapCurr && prevTop >= platBottom && currTop <= platBottom;
+
+			const float EPS = 0.001f;
+
+			if (landedFromAbove)
 			{
-				if (player.getTempPlatform().x != platform.getPosition().x && player.getTempPlatform().y != platform.getPosition().y)
+				onAnyPlatform = true;
+				if (player.getTempPlatform().x != platform.getPosition().x || player.getTempPlatform().y != platform.getPosition().y)
 				{
 					player.setFallingState(false);
 					player.setIsStanding(true);
+					// Snap the player to the top of the platform
+					player.setPosition(currLeft, platTop - player.getCurFrame().h);
 					player.setTempPlatform(platform.getPosition());
 					utils::logNumber("x", player.getPosition().x);
 					utils::logNumber("y", player.getPosition().y);
 				}
 			}
-			else if (utils::distanceFrom2Object(player.getPosition(), platform.getPosition()) > 34)
+			else if (hitHeadFromBelow)
 			{
-				if (utils::distanceFrom2Object(player.getPosition(), player.getTempPlatform()) > 34)
+				// push player down slightly below platform bottom to avoid sticking
+				player.setPosition(currLeft, platBottom + EPS);
+				player.setIsUp(false);
+				// ensure not considered standing
+				player.setFallingState(true);
+				player.setIsStanding(false);
+			}
+			else if (utils::AABBIntersect(player.getPosition(), player.getCurFrame().w, player.getCurFrame().h,
+										  platform.getPosition(), platform.getCurFrame().w, platform.getCurFrame().h))
+			{
+				// ambiguous overlap: compute penetration depths (MTV) and resolve on smallest axis
+				onAnyPlatform = true;
+				float overlapX = std::min(currRight, platRight) - std::max(currLeft, platLeft);
+				float overlapY = std::min(currBottom, platBottom) - std::max(currTop, platTop);
+
+				if (overlapX <= 0 || overlapY <= 0)
 				{
-					player.setFallingState(true);
+					continue; // shouldn't happen, but guard
+				}
+
+				if (overlapX < overlapY)
+				{
+					// resolve horizontally
+					if (currLeft < platLeft)
+						player.setPosition(currLeft - overlapX - EPS, currTop);
+					else
+						player.setPosition(currLeft + overlapX + EPS, currTop);
+				}
+				else
+				{
+					// resolve vertically
+					if (currTop < platTop)
+					{
+						// push up (player was above)
+						player.setPosition(currLeft, platTop - player.getCurFrame().h - EPS);
+						player.setFallingState(false);
+						player.setIsStanding(true);
+						player.setTempPlatform(platform.getPosition());
+					}
+					else
+					{
+						// push down (player was below)
+						player.setPosition(currLeft, platBottom + EPS);
+						player.setIsUp(false);
+						player.setFallingState(true);
+						player.setIsStanding(false);
+					}
 				}
 			}
+		}
+
+		if (!onAnyPlatform)
+		{
+			player.setFallingState(true);
+			player.setIsStanding(false);
 		}
 
 		// Render everything
