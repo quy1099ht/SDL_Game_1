@@ -18,6 +18,7 @@ This is a C++ SDL2 platformer game project. I know the code is ass. Feel free to
 
 * You need to download mingw, SDL2.0, SDL_Image
 * Follow the guide from [codergopher](https://www.youtube.com/channel/UCfiC4q3AahU4Io-s83-CIbQ)
+* Playlist: [Youtube](https://www.youtube.com/playlist?list=PL2RPjWnJduNmXHRYwdtublIPdlqocBoLS)
 * Just follow the first video to install on Window or second one for Linux
 
 ### Step by Step Installing libraries
